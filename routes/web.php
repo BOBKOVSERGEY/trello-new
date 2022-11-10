@@ -1,12 +1,25 @@
 <?php
 
+use App\Http\Controllers\BoardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('board', function () {
-   return inertia('Board');
+Route::group(['middleware' => ['auth', 'verified']], function () {
+
+    Route::get('/board/{board}', [BoardController::class, 'show'])
+        ->name('boards.show');
+
+    Route::put('/board/{board}', [BoardController::class, 'update'])
+        ->name('boards.update');
+
+    Route::get('/boards', [BoardController::class, 'index'])
+        ->name('boards');
+
+    Route::post('/boards', [BoardController::class, 'store'])
+        ->name('boards.store');
 });
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -17,8 +30,5 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/auth.php';

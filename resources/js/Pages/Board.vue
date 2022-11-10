@@ -1,18 +1,9 @@
 <template>
-    <div class="flex flex-col h-screen bg-indigo-500">
-        <header class="shrink-0 flex justify-between bg-white px-4 py-3">
-            <a href="#" class="text-2xl font-black tracking-tight">kanboard</a>
-            <nav>
-                <a href="#" class="text-sm font-medium px-3 py-2 rounded-md hover:bg-gray-100">My board</a>
-                <button class="ml-3">
-                    <img class="h-9 w-9 inline rounded-full" src="https://pbs.twimg.com/profile_images/1333896976602193922/MtWztkxt_400x400.jpg" alt="">
-                </button>
-            </nav>
-        </header>
-        <main class="flex-1 overflow-hidden">
-           <div class="flex flex-col h-full">
-                <div class="shrink-0 flex justify-between items-center p-4">
-                    <h1 class="text-2xl text-white font-bold">Board title</h1>
+    <AuthenticatedLayout>
+        <Head title="Board" />
+           <div class="flex flex-col h-full bg-indigo-500">
+                <div class="shrink-0 flex flex-wrap justify-between items-center p-4">
+                    <BoardNameForm :board="board" />
                    <div>
                        <button class="flex items-center bg-white/10 hover:bg-white/20 px-3 py-2 font-medium rounded-md text-white">
                            <DotHorizontalIcon class="w-5 h-5" />
@@ -27,9 +18,29 @@
                             class="w-72 bg-gray-200 max-h-full flex flex-col rounded-md">
                             <div class="flex items-center justify-between px-3 py-2">
                                 <h3 class="text-sm font-semibold text-gray-700">Backlog</h3>
-                                <button class="hover:bg-gray-300 w-8 h-8 rounded-md grid place-content-center">
-                                    <DotHorizontalIcon class="w-5 h-5" />
-                                </button>
+                                <Menu as="div" class="relative z-10">
+                                    <MenuButton class="hover:bg-gray-300 w-8 h-8 rounded-md grid place-content-center">
+                                        <DotHorizontalIcon class="w-5 h-5"/>
+                                    </MenuButton>
+
+                                    <transition
+                                        enter-active-class="transition transform duration-100 ease-out"
+                                        enter-from-class="opacity-0 scale-90"
+                                        enter-to-class="opacity-100 scale-100"
+                                        leave-active-class="transition transform duration-100 ease-in"
+                                        leave-from-class="opacity-100 scale-100"
+                                        leave-to-class="opacity-0 scale-90"
+                                    >
+                                        <MenuItems class="origin-top-left mt-2 focus:outline-none absolute left-0 bg-white overflow-hidden rounded-md shadow-lg border w-40">
+                                            <MenuItem v-slot="{active}">
+                                                <a href="#" :class="{'bg-gray-100': active}" class="block px-4 py-2 text-sm text-gray-700">Add card</a>
+                                            </MenuItem>
+                                            <MenuItem v-slot="{active}">
+                                                <a href="#" :class="{'bg-gray-100': active}" class="block px-4 py-2 text-sm text-red-600">Delete list</a>
+                                            </MenuItem>
+                                        </MenuItems>
+                                    </transition>
+                                </Menu>
                             </div>
                             <div class="pb-3 flex flex-col overflow-hidden">
                                 <div class="px-3 flex-1 overflow-y-auto">
@@ -82,13 +93,20 @@
                    </div>
                </div>
            </div>
-        </main>
-    </div>
+    </AuthenticatedLayout>
 </template>
 
 <script setup>
-
+import { Head } from '@inertiajs/inertia-vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import {Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/vue';
 import DotHorizontalIcon from "../Components/DotHorizontalIcon.vue";
 import PencilIcon from "@/Components/PencilIcon.vue";
 import PlusIcon from "@/Components/PlusIcon.vue";
+import BoardNameForm from "@/Components/BoardNameForm.vue";
+const props = defineProps({
+    board: Object
+})
+
+
 </script>
